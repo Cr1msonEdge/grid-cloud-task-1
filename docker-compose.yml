@@ -1,0 +1,29 @@
+version: '3.8'
+name: 'service'
+
+services:
+  db:
+    container_name: db
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: "mydatabase"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "1234"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  app:
+    container_name: app
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:1234@db:5432/mydatabase
+
+volumes:
+  pgdata:
